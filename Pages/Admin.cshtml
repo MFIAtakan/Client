@@ -1,0 +1,44 @@
+﻿@page
+@model Client.Pages.AdminModel
+@{
+    ViewData["Title"] = "Admin Sayfası";
+}
+
+<h2 class="text-center">@ViewData["Title"]</h2>
+<hr />
+<p>
+    <ul>
+        <li>Kullanıcı bilgilerini görebilirsiniz.</li>
+        <li>Entries alanı, kullanıcının formu göndermeden önce girdiği değerlerdir.</li>
+        <li>Result alanı, girilen değerler arasında en büyük değeri göstermektedir.</li>
+    </ul>
+</p>
+<div class="container">
+    <table class="table table-bordered table-striped table-hover text-center">
+        <thead class="thead-dark">
+            <tr>
+                <th>ID</th>
+                <th>Created At</th>
+                <th>Updated At</th>
+                <th>User ID</th>
+                <th>User Name</th>
+                <th>Entries</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var userOperation in Model.UserOperations)
+            {
+                <tr>
+                    <td>@userOperation.Id</td>
+                    <td>@userOperation.CreatedAt</td>
+                    <td>@userOperation.UpdatedAt</td>
+                    <td>@userOperation.UserId</td>
+                    <td>@userOperation.UserName</td>
+                    <td>@string.Join(", ", userOperation.Entries)</td>
+                    <td>@userOperation.Result</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

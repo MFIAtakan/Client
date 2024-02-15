@@ -1,0 +1,109 @@
+﻿@page
+@model UserOperationModel
+
+<div class="container my-5">
+    <h3 class="text-center">Asal sayılar giriniz.</h3>
+
+    <form method="post">
+        <div class="form-group text-center">
+            <label for="valueInput">Bir değer giriniz:</label>
+            <div class="input-group">
+                <input type="number" class="form-control" id="valueInput" />
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-primary" onclick="addValue()">Add Value</button>
+                </div>
+            </div>
+
+            <input id="values" asp-for="EnteredValues" name="EnteredValues" type="hidden" />
+        </div>
+
+        <div class="text-center">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Entered Values</th>
+                    </tr>
+                </thead>
+                <tbody id="enteredValuesTableBody"></tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="warningModal" tabindex="-1" role="dialog" aria-labelledby="warningModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="warningModalLabel">Uyarı</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="warningModalBody"></div>
+                </div>
+            </div>
+        </div>
+
+        <br />
+        <br />
+        <hr />
+
+        <button type="submit" class="btn btn-success btn-block d-flex m-auto" onclick="validateAndSubmit()">Kaydet</button>
+    </form>
+
+    <script>
+        var enteredValues = [];
+
+        function addValue() {
+            var valueInput = document.getElementById('valueInput');
+            var enteredValuesTableBody = document.getElementById('enteredValuesTableBody');
+            var warningModal = $('#warningModal');
+            var warningModalBody = document.getElementById('warningModalBody');
+
+            var value = parseInt(valueInput.value);
+
+            if (!isNaN(value) && value > 0) {
+                if (isPrime(value)) {
+                    enteredValues.push(value);
+
+                    var row = enteredValuesTableBody.insertRow();
+                    var cell = row.insertCell(0);
+                    cell.textContent = valueInput.value;
+
+                    // Clear the input field
+                    valueInput.value = '';
+
+                    // Update the hidden input value with the updated array
+                    document.getElementById('values').value = JSON.stringify(enteredValues);
+                } else {
+                    // Show a Bootstrap modal if the number is not prime
+                    warningModalBody.innerHTML = `<p>${value} bir asal sayı değildir!</p>`;
+                    warningModal.modal('show');
+                }
+            } else {
+                // Show a Bootstrap modal if the entered value is not a positive integer
+                warningModalBody.innerHTML = '<p>Lütfen geçerli bir pozitif tam sayı girin!</p>';
+                warningModal.modal('show');
+            }
+        }
+
+        function isPrime(num) {
+            if (num <= 1) return false;
+            for (var i = 2; i <= Math.sqrt(num); i++) {
+                if (num % i === 0) return false;
+            }
+            return true;
+        }
+
+        function validateAndSubmit() {
+            var warningModal = $('#warningModal');
+            var warningModalBody = document.getElementById('warningModalBody');
+
+            if (enteredValues.length === 0) {
+                // Show a Bootstrap modal if there are no entered values
+                warningModalBody.innerHTML = '<p>Lütfen en az bir değer ekleyin!</p>';
+                warningModal.modal('show');
+                return false; // Prevent form submission
+            }
+            return true; // Allow form submission
+        }
+    </script>
+</div>
